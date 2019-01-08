@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>AES</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="pridejs-config-duration" content="regular">
+	<link rel="stylesheet" href="/fonts/inconsolata.css">
+	<script type="text/javascript" src="js/crypto-js.js"></script>
+	<style type="text/css">
+	</style>
+	<style type="text/css">
+	._desktop-linecompact {
+		display: inline-block;
+	}
+	._desktop-linebreak {
+		display: block;
+	}
+	@media screen and (max-width: 767px) {
+		.desktop-only {
+			visibility: hidden;
+		}
+		._desktop-linecompact {
+			display: block;
+		}
+		._desktop-linebreak {
+			display: inline-block;
+		}
+	}
+	</style>
+	<style type="text/css">
+	* {
+		text-rendering: optimizeLegibility;
+		box-sizing: border-box;
+		transition: all 100ms ease;
+	}
+	body {
+		font-family: 'Inconsolata', Seravek, 'Open Sans', 'Helvetica Neue', Helvetica, 'Lucida Grande', Arial, 'Arial-Black', 'Arial Black', 'Hiragino Sans GB', 'Heiti SC', 'Microsoft YaHei', sans-serif;
+		font-size: 18px;
+		font-weight: 300;
+		color: #FFF;
+		color: #666;
+		background: #2089DA;
+		background: #F2F2F2;
+		padding: 0;
+		margin: 0;
+	}
+	.cont {
+		width: auto;
+		max-width: 700px;
+		padding: 1px 24px 0;
+		margin: 0 auto;
+	}
+	.content {
+		margin: 1.6rem 0 0;
+	}
+	h1 {
+		font-size: 26px;
+		/*letter-spacing: 0.02rem;*/
+		/*height: 0px;*/
+		margin: 1.6rem 0 0.4rem;
+		/*overflow: hidden;*/
+	}
+	h2 {
+		font-size: 16px;
+		font-weight: 500;
+		letter-spacing: 0.12rem;
+		text-transform: uppercase;
+		opacity: 1;
+		margin: 0.8rem 0;
+	}
+	h3 {
+		font-size: 14px;
+		font-weight: 400;
+		opacity: 0.8;
+		margin: 0.8rem 0;
+	}
+	input[type="text"], textarea {
+		font-family: 'Source Code Pro', 'Menlo', 'Consolas', 'Monaco', Seravek, 'Open Sans', 'Helvetica Neue', Helvetica, 'Lucida Grande', Arial, 'Arial-Black', 'Arial Black', 'Hiragino Sans GB', 'Heiti SC', 'Microsoft YaHei', sans-serif;
+		font-size: 18px;
+		font-weight: 400;
+		line-height: 26px;
+		word-wrap: break-word;
+		word-break: break-all;
+		box-shadow: rgba(0, 0, 0, 0.044) 0 1px 2px;
+		border: none;
+		border-radius: 4px;
+		outline: none;
+
+		display: block;
+		width: 100%;
+		padding: 6px;
+		margin: 0;
+
+		resize: none;
+	}
+	input[type="number"]:focus, textarea:focus {
+		box-shadow: rgba(0, 0, 0, 0.1) 0 3px 20px 1px;
+	}
+	input[type="number"] {
+	}
+	textarea {
+		height: 14vh;
+	}
+	@media screen and (max-height: 500px) {
+		textarea {
+			height: 6rem;
+		}
+	}
+	#useroptions-container {
+
+	}
+	#useroptions-container label {
+		font-weight: 400;
+		color: #666;
+		display: inline-block;
+		margin-right: 15px;
+	}
+	#useractions-container {
+		height: 80px;
+		padding: 15px 0;
+	}
+	#useractions-container > button {
+		font-size: 16px;
+		line-height: 20px;
+		text-align: center;
+		color: #FFF;
+		background: #09D;
+		border: none;
+		border-radius: 5px;
+		display: block;
+		width: 45%;
+		padding: 15px 0;
+		margin: 0;
+		cursor: pointer;
+	}
+	#useractions-container > button:first-child {
+		float: left;
+	}
+	#useractions-container > button:last-child {
+		float: right;
+	}
+	#useroutputtext {
+	}
+	footer {
+		font-size: 13px;
+		font-weight: 400;
+		color: #666;
+
+		padding: 2rem 0 2rem;
+	}
+	footer a {
+		opacity: 0.5;
+		transition: none;
+	}
+	footer a:hover {
+		opacity: 1;
+	}
+	/* ---------------------------------------- */
+	a {
+		color: inherit;
+		text-decoration: none;
+	}
+	</style>
+	<style>
+	.bookmarklet-anchor-hidden-text {
+		font-size: 0px;
+	}
+	.bookmarklet-anchor-hidden-text::before {
+		font-size: 13px;
+	}
+	</style>
+	<script>
+	var localStorageKeyForInput = 'MyAesUtil_20190108-0001-0001-0001';
+	var localStorageKeyForPasscode = 'MyAesUtil_20190108-0001-0001-0002';
+	var localStorageKeyForBase64 = 'MyAesUtil_20190108-0001-0001-0005';
+	var localStorageKeyForShifting = 'MyAesUtil_20190108-0001-0001-0006';
+	</script>
+</head>
+<body>
+	<div class="cont">
+		<h1><a href="./">AES</a></h1>
+		<div class="content" id="userinputtext-container">
+			<h2><label for="userinputtext">Input Text</label></h2>
+			<textarea id="userinputtext" autofocus></textarea>
+			<script>
+			try {
+				if (localStorage[localStorageKeyForInput]) {
+					document.getElementById('userinputtext').value = localStorage[localStorageKeyForInput];
+				}
+			} catch (e) {
+
+			} finally {
+
+			}
+			</script>
+		</div>
+		<div class="content" id="userinputkey-container">
+			<h2><label for="userinputkey">Encryption Key</label></h2>
+			<input type="text" id="userinputkey" placeholder="Give a key here" value="3422f74e46f04b668305916e02f25999"></input>
+			<script>
+			try {
+				if (localStorage[localStorageKeyForPasscode]) {
+					document.getElementById('userinputkey').value = Number(localStorage[localStorageKeyForPasscode]);
+				}
+			} catch (e) {
+
+			} finally {
+
+			}
+			</script>
+		</div>
+		<div class="content" id="useractions-container">
+			<button type="button" id="btn-encrypt">Encrypt</button>
+			<button type="button" id="btn-decrypt">Decrypt</button>
+		</div>
+		<div class="content" id="useroutputtext-container">
+			<h2>Output Text</h2>
+			<textarea id="useroutputtext" readonlyy></textarea>
+		</div>
+		<footer class="desktop-only">
+			<div class="_desktop-linecompact">
+				<a href="//joyneop.xyz/">Created by <strong>Neruthes (a.k.a. Joy Neop)</strong>.</a>
+			</div>
+		</footer>
+	</div>
+	<script>
+	var encrypt = function (text, key) {
+		return CryptoJS.AES.encrypt(text, key).toString();
+	};
+
+	var decrypt = function (text, key) {
+		return CryptoJS.AES.decrypt(text, key).toString(CryptoJS.enc.Utf8);
+	};
+
+	document.getElementById('userinputtext').addEventListener('click', function () {
+			document.getElementById('userinputtext').value = document.getElementById('userinputtext').value;
+	});
+	document.getElementById('userinputtext').addEventListener('input', function () {
+		localStorage[localStorageKeyForInput] = document.getElementById('userinputtext').value;
+	});
+	document.getElementById('userinputkey').addEventListener('input', function () {
+		localStorage[localStorageKeyForPasscode] = document.getElementById('userinputkey').value;
+	});
+
+	var taEncodedFocusEventHandler = function () {
+		setTimeout(function () {
+			document.getElementById('useroutputtext').select();
+			document.getElementById('useroutputtext').setSelectionRange(0, 99999);
+		}, 10);
+	};
+
+	document.getElementById('useroutputtext').addEventListener('focus', taEncodedFocusEventHandler);
+	document.getElementById('useroutputtext').addEventListener('click', taEncodedFocusEventHandler);
+
+	document.getElementById('btn-encrypt').addEventListener('click', function () {
+		document.getElementById('useroutputtext').value = encrypt(document.getElementById('userinputtext').value, document.getElementById('userinputkey').value);
+	});
+	document.getElementById('btn-decrypt').addEventListener('click', function () {
+		document.getElementById('useroutputtext').value = decrypt(document.getElementById('userinputtext').value, document.getElementById('userinputkey').value);
+	});
+	</script>
+</body>
+</html>
