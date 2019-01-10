@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8" />
-	<title>AES</title>
+	<title>Crypto-Utils</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="pridejs-config-duration" content="regular">
 	<link rel="stylesheet" href="/fonts/inconsolata.css">
@@ -107,20 +107,26 @@
 			height: 6rem;
 		}
 	}
-	#useroptions-container {
+	#userOptions-container {
 
 	}
-	#useroptions-container label {
+	#userOptions-container label {
 		font-weight: 400;
 		color: #666;
 		display: inline-block;
 		margin-right: 15px;
 	}
-	#useractions-container {
+	#userOptions-container select {
+		font-size: 22px;
+		width: 50%;
+		height: 40px;
+		min-width: 300px;
+	}
+	#userActions-container {
 		height: 80px;
 		padding: 15px 0;
 	}
-	#useractions-container > button {
+	#userActions-container > button {
 		font-size: 16px;
 		line-height: 20px;
 		text-align: center;
@@ -134,13 +140,13 @@
 		margin: 0;
 		cursor: pointer;
 	}
-	#useractions-container > button:first-child {
+	#userActions-container > button:first-child {
 		float: left;
 	}
-	#useractions-container > button:last-child {
+	#userActions-container > button:last-child {
 		float: right;
 	}
-	#useroutputtext {
+	#userOutputText {
 	}
 	footer {
 		font-size: 13px;
@@ -171,22 +177,44 @@
 	}
 	</style>
 	<script>
-	var localStorageKeyForInput = 'MyAesUtil_20190108-0001-0001-0001';
-	var localStorageKeyForPasscode = 'MyAesUtil_20190108-0001-0001-0002';
-	var localStorageKeyForBase64 = 'MyAesUtil_20190108-0001-0001-0005';
-	var localStorageKeyForShifting = 'MyAesUtil_20190108-0001-0001-0006';
+	var localStorageKeyForInput = 'MyCryptoUtils_20190108-0001-0001-0001';
+	var localStorageKeyForPasscode = 'MyCryptoUtils_20190108-0001-0001-0002';
+	var localStorageKeyForBase64 = 'MyCryptoUtils_20190108-0001-0001-0005';
+	var localStorageKeyForShifting = 'MyCryptoUtils_20190108-0001-0001-0006';
+	var fieldsTable = {
+		AES: { userInputText: true, userInputKey: true, userButtonDecrypt: true},
+		SHA1: { userInputText: true, userInputKey: false, userButtonDecrypt: false},
+		SHA256: { userInputText: true, userInputKey: false, userButtonDecrypt: false},
+		SHA512: { userInputText: true, userInputKey: false, userButtonDecrypt: false},
+		MD5: { userInputText: true, userInputKey: false, userButtonDecrypt: false}
+	}
 	</script>
 </head>
 <body>
 	<div class="cont">
-		<h1><a href="./">AES</a></h1>
-		<div class="content" id="userinputtext-container">
-			<h2><label for="userinputtext">Input Text</label></h2>
-			<textarea id="userinputtext" autofocus></textarea>
+		<h1><a href="./">Crypto-Utils</a></h1>
+		<div class="content" id="userOptions-container">
+			<h2>Algorithm</h2>
+			<div class="">
+				<select class="" name="" id="js-UserInputAlgorithm">
+					<option value="AES">AES</option>
+					<option value="SHA1;Hex">SHA1</option>
+					<option value="SHA256;Hex">SHA256</option>
+					<option value="SHA512;Hex">SHA512</option>
+					<option value="SHA1;Base64">SHA1-Base64</option>
+					<option value="SHA256;Base64">SHA256-Base64</option>
+					<option value="SHA512;Base64">SHA512-Base64</option>
+					<option value="MD5">MD5</option>
+				</select>
+			</div>
+		</div>
+		<div class="content" id="userInputText-container">
+			<h2><label for="userInputText">Input Text</label></h2>
+			<textarea id="userInputText" autofocus></textarea>
 			<script>
 			try {
 				if (localStorage[localStorageKeyForInput]) {
-					document.getElementById('userinputtext').value = localStorage[localStorageKeyForInput];
+					document.getElementById('userInputText').value = localStorage[localStorageKeyForInput];
 				}
 			} catch (e) {
 
@@ -195,13 +223,13 @@
 			}
 			</script>
 		</div>
-		<div class="content" id="userinputkey-container">
-			<h2><label for="userinputkey">Encryption Key</label></h2>
-			<input type="text" id="userinputkey" placeholder="Give a key here" value="3422f74e46f04b668305916e02f25999"></input>
+		<div class="content" id="userInputKey-container">
+			<h2><label for="userInputKey">Encryption Key</label></h2>
+			<input type="text" id="userInputKey" placeholder="Give a key here" value="3422f74e46f04b668305916e02f25999"></input>
 			<script>
 			try {
 				if (localStorage[localStorageKeyForPasscode]) {
-					document.getElementById('userinputkey').value = Number(localStorage[localStorageKeyForPasscode]);
+					document.getElementById('userInputKey').value = Number(localStorage[localStorageKeyForPasscode]);
 				}
 			} catch (e) {
 
@@ -210,54 +238,76 @@
 			}
 			</script>
 		</div>
-		<div class="content" id="useractions-container">
-			<button type="button" id="btn-encrypt">Encrypt</button>
-			<button type="button" id="btn-decrypt">Decrypt</button>
+		<div class="content" id="userActions-container">
+			<button type="button" id="userButtonEncrypt">Encrypt</button>
+			<button type="button" id="userButtonDecrypt">Decrypt</button>
 		</div>
-		<div class="content" id="useroutputtext-container">
+		<div class="content" id="userOutputText-container">
 			<h2>Output Text</h2>
-			<textarea id="useroutputtext" readonlyy></textarea>
+			<textarea id="userOutputText" readonlyy></textarea>
 		</div>
 		<footer class="desktop-only">
 			<div class="_desktop-linecompact">
-				<a href="//joyneop.xyz/">Created by <strong>Neruthes (a.k.a. Joy Neop)</strong>.</a>
+				<a href="//joyneop.xyz/">Maintained by <strong>Neruthes (a.k.a. Joy Neop)</strong>.</a>
 			</div>
 		</footer>
 	</div>
 	<script>
-	var encrypt = function (text, key) {
-		return CryptoJS.AES.encrypt(text, key).toString();
+	var encrypt = function (text, key, rawAlgorithm) {
+		var algorithm = rawAlgorithm.replace(/;.+$/, '');
+		var toStringEncoding = rawAlgorithm.indexOf(';') === -1 ? undefined : CryptoJS.enc[rawAlgorithm.replace(/^.+;/, '')];
+		return fieldsTable[algorithm].userInputKey ? CryptoJS[algorithm].encrypt(text, key).toString(toStringEncoding) : CryptoJS[algorithm](text, key).toString(toStringEncoding)
 	};
 
-	var decrypt = function (text, key) {
-		return CryptoJS.AES.decrypt(text, key).toString(CryptoJS.enc.Utf8);
+	var decrypt = function (text, key, algorithm) {
+		return CryptoJS[algorithm].decrypt(text, key).toString(CryptoJS.enc.Utf8);
 	};
 
-	document.getElementById('userinputtext').addEventListener('click', function () {
-			document.getElementById('userinputtext').value = document.getElementById('userinputtext').value;
+	document.getElementById('userInputText').addEventListener('click', function () {
+			document.getElementById('userInputText').value = document.getElementById('userInputText').value;
 	});
-	document.getElementById('userinputtext').addEventListener('input', function () {
-		localStorage[localStorageKeyForInput] = document.getElementById('userinputtext').value;
+	document.getElementById('userInputText').addEventListener('input', function () {
+		localStorage[localStorageKeyForInput] = document.getElementById('userInputText').value;
 	});
-	document.getElementById('userinputkey').addEventListener('input', function () {
-		localStorage[localStorageKeyForPasscode] = document.getElementById('userinputkey').value;
+	document.getElementById('userInputKey').addEventListener('input', function () {
+		localStorage[localStorageKeyForPasscode] = document.getElementById('userInputKey').value;
 	});
 
-	var taEncodedFocusEventHandler = function () {
+	var userOutputTextFocusEventHandler = function () {
 		setTimeout(function () {
-			document.getElementById('useroutputtext').select();
-			document.getElementById('useroutputtext').setSelectionRange(0, 99999);
+			document.getElementById('userOutputText').select();
+			document.getElementById('userOutputText').setSelectionRange(0, 99999);
 		}, 10);
 	};
 
-	document.getElementById('useroutputtext').addEventListener('focus', taEncodedFocusEventHandler);
-	document.getElementById('useroutputtext').addEventListener('click', taEncodedFocusEventHandler);
+	var userAlgorithmChangeEventHandler = function () {
+		var currentAlgorithm = document.getElementById('js-UserInputAlgorithm').value.replace(/;.+$/, '');
+		document.getElementById('userInputKey-container').style.display = fieldsTable[currentAlgorithm].userInputKey ? 'block' : 'none';
+		document.getElementById('userButtonDecrypt').style.display = fieldsTable[currentAlgorithm].userButtonDecrypt ? 'block' : 'none';
+		document.getElementById('userOutputText').value = '';
+		document.getElementById('userButtonEncrypt').click();
+	};
 
-	document.getElementById('btn-encrypt').addEventListener('click', function () {
-		document.getElementById('useroutputtext').value = '==== Encrypted with https://joyneop.xyz/aes/ ====\n\n' + encrypt(document.getElementById('userinputtext').value, document.getElementById('userinputkey').value);
+	document.getElementById('userOutputText').addEventListener('focus', userOutputTextFocusEventHandler);
+	document.getElementById('userOutputText').addEventListener('click', userOutputTextFocusEventHandler);
+	document.getElementById('js-UserInputAlgorithm').addEventListener('change', userAlgorithmChangeEventHandler);
+
+	var getOutputTextHeaderForAlgorithm = function (algorithm) {
+		return fieldsTable[algorithm.replace(/;.+$/, '')].userButtonDecrypt ? '==== Encrypted with https://joyneop.xyz/crypto-utils/ ====\n\n' : '';
+	};
+	document.getElementById('userButtonEncrypt').addEventListener('click', function () {
+		document.getElementById('userOutputText').value = getOutputTextHeaderForAlgorithm(document.getElementById('js-UserInputAlgorithm').value) + encrypt(
+			document.getElementById('userInputText').value,
+			document.getElementById('userInputKey').value,
+			document.getElementById('js-UserInputAlgorithm').value,
+		);
 	});
-	document.getElementById('btn-decrypt').addEventListener('click', function () {
-		document.getElementById('useroutputtext').value = decrypt(document.getElementById('userinputtext').value.replace(/^====.+?\n/g, '').trim(), document.getElementById('userinputkey').value);
+	document.getElementById('userButtonDecrypt').addEventListener('click', function () {
+		document.getElementById('userOutputText').value = decrypt(
+			document.getElementById('userInputText').value.replace(/^====.+?\n/g, '').trim(),
+			document.getElementById('userInputKey').value,
+			document.getElementById('js-UserInputAlgorithm').value
+		);
 	});
 	</script>
 </body>
