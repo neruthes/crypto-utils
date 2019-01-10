@@ -294,7 +294,7 @@
 	document.getElementById('js-UserInputAlgorithm').addEventListener('change', userAlgorithmChangeEventHandler);
 
 	var getOutputTextHeaderForAlgorithm = function (algorithm) {
-		return fieldsTable[algorithm.replace(/;.+$/, '')].userButtonDecrypt ? '==== Encrypted with https://joyneop.xyz/crypto-utils/ ====\n\n' : '';
+		return fieldsTable[algorithm.replace(/;.+$/, '')].userButtonDecrypt ? '==== Encrypted via AES on https://joyneop.xyz/crypto-utils/ ====\n\n' : '';
 	};
 	document.getElementById('userButtonEncrypt').addEventListener('click', function () {
 		document.getElementById('userOutputText').value = getOutputTextHeaderForAlgorithm(document.getElementById('js-UserInputAlgorithm').value) + encrypt(
