@@ -231,7 +231,7 @@
 			<script>
 			try {
 				if (localStorage[localStorageKeyForPasscode]) {
-					document.getElementById('userInputKey').value = Number(localStorage[localStorageKeyForPasscode]);
+					document.getElementById('userInputKey').value = localStorage[localStorageKeyForPasscode];
 				}
 			} catch (e) {
 
