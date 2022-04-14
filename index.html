@@ -7,7 +7,7 @@
 	<meta name="pridejs-config-duration" content="regular">
 	<!-- <link rel="stylesheet" href="/fonts/inconsolata.css"> -->
 	<link rel="stylesheet" href="/fonts/seravek.css">
-	<script type="text/javascript" src="js/crypto-js.js"></script>
+	<script type="text/javascript" src="./node_modules/crypto-js/crypto-js.js"></script>
 	<style type="text/css">
 	</style>
 	<style type="text/css">
@@ -246,11 +246,11 @@
 		</div>
 		<div class="content" id="userOutputText-container">
 			<h2>Output Text</h2>
-			<textarea id="userOutputText" readonlyy></textarea>
+			<textarea id="userOutputText"></textarea>
 		</div>
 		<footer class="desktop-only">
 			<div class="_desktop-linecompact">
-				<a href="//neruthes.xyz/">Maintained by <strong>Neruthes (a.k.a. Joy Neop)</strong>.</a>
+				<a href="//neruthes.xyz/">Maintained by <strong>Neruthes</strong>.</a>
 			</div>
 		</footer>
 	</div>
@@ -295,7 +295,7 @@
 	document.getElementById('js-UserInputAlgorithm').addEventListener('change', userAlgorithmChangeEventHandler);
 
 	var getOutputTextHeaderForAlgorithm = function (algorithm) {
-		return fieldsTable[algorithm.replace(/;.+$/, '')].userButtonDecrypt ? '==== Encrypted via AES on https://neruthes.xyz/crypto-utils/ ====\n\n' : '';
+		return fieldsTable[algorithm.replace(/;.+$/, '')].userButtonDecrypt ? '==== Encrypted via AES on https://neruthes.xyz/crypto-utils/ with key "' + document.getElementById('userInputKey').value + '" ====\n\n' : '';
 	};
 	document.getElementById('userButtonEncrypt').addEventListener('click', function () {
 		document.getElementById('userOutputText').value = getOutputTextHeaderForAlgorithm(document.getElementById('js-UserInputAlgorithm').value) + encrypt(
