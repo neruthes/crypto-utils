@@ -1,3 +1,3 @@
 # Crypto-Utils
 
-https://joyneop.xyz/crypto-utils/
+https://neruthes.xyz/crypto-utils/
